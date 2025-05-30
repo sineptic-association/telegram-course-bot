@@ -9,20 +9,20 @@ env:
 
 jobs:
   check:
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-4vcpu-ubuntu-2404
     steps:
       - uses: actions/checkout@v4
       - name: Use nightly version
         run: rustup override set nightly
           && rustup component add --toolchain nightly-x86_64-unknown-linux-gnu rustfmt clippy
-      - uses: Swatinem/rust-cache@v2
+      - uses: useblacksmith/rust-cache@v3
       - name: Check formatting
         run: cargo fmt --check
       - name: Linter
         run: cargo clippy -- -Dwarnings
 
   build:
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-4vcpu-ubuntu-2404
     needs: check
     outputs:
       executable_id: ${{ steps.upload_executable.outputs.artifact-id }}
@@ -31,7 +31,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Use nightly version
         run: rustup override set nightly
-      - uses: Swatinem/rust-cache@v2
+      - uses: useblacksmith/rust-cache@v3
       - name: Build
         run: cargo build --release
       - name: Upload build artifact
